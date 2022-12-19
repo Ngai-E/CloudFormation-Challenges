@@ -29,6 +29,6 @@ Write a CloudFormation script that:
 12. Finally, once you execute this CloudFormation script, you should be able to delete it and create it again, over and over in a predictable and repeatable manner, this is the true verification of working Infrastructure-as-Code
 
 ### Challenge Solution
-
+https://github.com/Ngai-E/CloudFormation-Challenges/tree/main/challenge-1
 ### How to run script with AWS CLI
 ```aws cloudformation create-stack --stack-name challengeStack --template-body file://challenge_1.yml  --parameters file://challenge_1.json --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1```
