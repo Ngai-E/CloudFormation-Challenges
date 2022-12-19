@@ -1,0 +1,118 @@
+Description: >
+            Ngai Elizabeth / Udacity CloudFormation challenge 2
+Parameters:
+  EnvironmentName:
+    Description:  An environment name that will be prefixed with the resources
+    Type: String   
+  VpcCIDR:
+    Description:  IPv4 range for this vpc
+    Type: String   
+    Default: 10.0.0.0/16
+  PublicSubnetCIDR:
+    Description:  IPlease enter the IP range (CIDR notation) for the public subnet
+    Type: String   
+    Default: 10.0.1.0/24
+  PrivateSubnetCIDR:
+    Description:  Please enter the IP range (CIDR notation) for the private subnet
+    Type: String   
+    Default: 10.0.2.0/24
+
+Resources:
+  InfraVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsHostnames: true
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-VPC 
+  InfraInternetGateway:
+    Type: AWS::EC2::InternetGateway 
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-InternetGateway  
+  InfraInternetGatewayAyyachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref InfraInternetGateway
+      VpcId: !Ref InfraVPC
+  InfraPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref PublicSubnetCIDR
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Public Subnet
+      VpcId: !Ref InfraVPC
+  InfraPrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref PrivateSubnetCIDR
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Private Subnet
+      VpcId: !Ref InfraVPC
+  InfraNatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt InfraNatGatewayEIP.AllocationId
+      ConnectivityType: public
+      SubnetId: !Ref InfraPublicSubnet
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}- NAT Gateway
+  InfraNatGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+    DependsOn: InfraInternetGatewayAyyachment    
+  InfraPublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}- Public Route Table
+      VpcId: !Ref InfraVPC
+  InfraPrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}- Public Route Table
+      VpcId: !Ref InfraVPC
+  PublicSubnetRouteTableAssociatio:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref InfraPublicRouteTable
+      SubnetId: !Ref InfraPublicSubnet
+  PrivateSubnetRouteTableAssociatio:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref InfraPrivateRouteTable
+      SubnetId: !Ref InfraPrivateSubnet
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InfraInternetGatewayAyyachment
+    Properties:
+      RouteTableId: !Ref InfraPublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InfraInternetGateway
+
+  DefaultPrivateRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InfraInternetGatewayAyyachment
+    Properties:
+      RouteTableId: !Ref InfraPrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref InfraNatGateway
+
+
+        
+    
+    
+             
+
