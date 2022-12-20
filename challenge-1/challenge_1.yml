@@ -9,9 +9,17 @@ Parameters:
     Type: String   
     Default: 10.0.0.0/16
   PublicSubnetCIDR:
-    Description:  IPlease enter the IP range (CIDR notation) for the public subnet
+    Description:  Please enter the IP range (CIDR notation) for the public subnet
     Type: String   
     Default: 10.0.1.0/24
+  PublicSubnetAZ:
+    Description:  Please enter the Availability zone of public subnet
+    Type: String   
+    Default: us-east-1a
+  PrivateSubnetAZ:
+    Description:  Please enter the Availability zone of private subnet
+    Type: String   
+    Default: us-east-1a
   PrivateSubnetCIDR:
     Description:  Please enter the IP range (CIDR notation) for the private subnet
     Type: String   
@@ -42,6 +50,7 @@ Resources:
     Properties: 
       CidrBlock: !Ref PublicSubnetCIDR
       MapPublicIpOnLaunch: true
+      AvailabilityZone: !Ref PublicSubnetAZ
       Tags: 
         - Key: Name
           Value: !Sub ${EnvironmentName}-Public Subnet
@@ -51,6 +60,7 @@ Resources:
     Properties: 
       CidrBlock: !Ref PrivateSubnetCIDR
       MapPublicIpOnLaunch: false
+      AvailabilityZone: !Ref PrivateSubnetAZ
       Tags: 
         - Key: Name
           Value: !Sub ${EnvironmentName}-Private Subnet
@@ -110,9 +120,14 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref InfraNatGateway
 
-
-        
-    
-    
-             
-
+Outputs:
+  StackVPC:
+    Description: The ID of the infrastructure VPC
+    Value: !Ref InfraVPC
+    Export:
+      Name: !Sub "${EnvironmentName}-VPCID"
+  StackPrivateSubnet:
+    Description: The Id of the private subnet resource
+    Value: !Ref InfraPrivateSubnet
+    Export:
+      Name: !Sub "${EnvironmentName}-PrivSub"      
