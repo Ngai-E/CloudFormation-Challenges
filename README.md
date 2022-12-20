@@ -45,3 +45,8 @@ Use the infrastructure we created earlier to build and deploy the following:
 3. <b>IAM Role and InstanceProfile</b>: The IAM Role to allow EC2 Session Manager to access our server. An InstanceProfile will allow passing the IAM role to our server.
 4. You will provide input parameters to this script, for future expansion and flexibility.
 5. Bonus/Optional: Instead of hard-coding the VPC and Subnet ID, use the import-export feature to cross reference the resources created in Challenge 2.
+### Challenge Solution
+https://github.com/Ngai-E/CloudFormation-Challenges/tree/main/challenge-3
+### How to run script with AWS CLI
+Make sure stack from challenge two has been created successfully
+```aws cloudformation create-stack --stack-name challengeStack --template-body file://challenge-3.yml  --parameters file://challenge-3.json --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1```
