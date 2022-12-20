@@ -47,6 +47,15 @@ Use the infrastructure we created earlier to build and deploy the following:
 5. Bonus/Optional: Instead of hard-coding the VPC and Subnet ID, use the import-export feature to cross reference the resources created in Challenge 2.
 ### Challenge Solution
 https://github.com/Ngai-E/CloudFormation-Challenges/tree/main/challenge-3
+
+To verify this set up do the following;
+ - create a jumpbox server in the prublic subnet to connect to the private subnet through ssh.
+ - configure aws cli in the private linux server 
+ - create a parameter ```BaseMachineImage``` in your parameter store in your aws console
+ - run the command ```aws ssm get-parameters --names BaseMachineImage --region us-east-1```
+ - you shou see it listed and not get a network error such as a timeout
+ 
+
 ### How to run script with AWS CLI
 Make sure stack from challenge two has been created successfully
 ```aws cloudformation create-stack --stack-name challengeStack --template-body file://challenge-3.yml  --parameters file://challenge-3.json --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1```
