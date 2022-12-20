@@ -1,1 +1,19 @@
 
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Challenge-2"
+    },
+    {
+        "ParameterKey": "PrivateSubnetAZ",
+        "ParameterValue": "us-east-1b"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.micro"
+    },
+    {
+        "ParameterKey": "MachineId",
+        "ParameterValue": "ami-0b5eea76982371e91"
+    }
+]
