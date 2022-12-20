@@ -64,15 +64,21 @@ Resources:
     Properties: 
       GroupDescription: Allow inbound port 80 acces
       SecurityGroupEgress: 
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      SecurityGroupIngress: 
         - IpProtocol: -1
           FromPort: -1
           ToPort: -1
           CidrIp: 0.0.0.0/0
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 
+              Fn::ImportValue:
+                Fn::Sub: "${EnvironmentName}-CidrBlock" 
       Tags:
         - Key: Name
           Value: !Sub "${EnvironmentName}-linux server Security Group"
