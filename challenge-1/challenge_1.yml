@@ -131,3 +131,8 @@ Outputs:
     Value: !Ref InfraPrivateSubnet
     Export:
       Name: !Sub "${EnvironmentName}-PrivSub"      
+  VPCCidrBlock:
+    Description: Cidr block of the vpc
+    Value: !GetAtt InfraVPC.CidrBlock
+    Export:
+      Name: !Sub "${EnvironmentName}-CidrBlock"      
