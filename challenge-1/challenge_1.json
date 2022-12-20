@@ -14,5 +14,13 @@
     {
         "ParameterKey": "PrivateSubnetCIDR",
         "ParameterValue": "10.0.2.0/24"
+    },
+    {
+        "ParameterKey": "PublicSubnetAZ",
+        "ParameterValue": "us-east-1a"
+    },
+    {
+        "ParameterKey": "PrivateSubnetAZ",
+        "ParameterValue": "us-east-1b"
     }
 ]
