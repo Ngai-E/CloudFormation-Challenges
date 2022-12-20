@@ -1,1 +1,80 @@
 
+Description: Ngai Elizabeth / Udacity Challenge 3
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed with the resources
+    Type: String
+  MachineId:
+    Description: Id of machine image to use  
+    Type: String
+  InstanceType:
+    Description: Instance type 
+    Type: String
+  PrivateSubnetAZ:
+    Description:  Please enter the Availability zone of private subnet
+    Type: String   
+    Default: us-east-1a  
+Resources:
+  InfraRoleForSSAcess:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  InfraInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: InfraRoleForSSAcess
+  InfraLinuxServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: !Ref PrivateSubnetAZ
+      ImageId: !Ref MachineId
+      InstanceType: !Ref InstanceType 
+      IamInstanceProfile: !Ref InfraInstanceProfile 
+      SubnetId: 
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-PrivSub"
+      SecurityGroups: 
+        - Ref: InfraLinuxServerSecurityGroup
+      UserData:        
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install -y httpd
+          sudo systemctl start httpd
+          sudo systemctl enable httpd 
+      KeyName: challenge
+      Tags:
+        - Key: Name
+          Value: !Sub "${EnvironmentName}-linux server"
+  InfraLinuxServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Allow inbound port 80 acces
+      SecurityGroupEgress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress: 
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub "${EnvironmentName}-linux server Security Group"
+      VpcId:         
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-VPCID"
+     
